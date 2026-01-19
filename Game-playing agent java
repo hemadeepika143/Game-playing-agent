@@ -1,0 +1,145 @@
+import java.util.Scanner;
+ public class TicTacToeAI 
+ {
+    static char[] board = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
+    static Scanner sc = new Scanner(System.in);
+    static void printBoard()                                                                                 // Print board
+ {                                                                                
+        System.out.println();
+        System.out.println(board[0] + " | " + board[1] + " | " + board[2]);
+        System.out.println("--+---+--");
+        System.out.println(board[3] + " | " + board[4] + " | " + board[5]);
+        System.out.println("--+---+--");
+        System.out.println(board[6] + " | " + board[7] + " | " + board[8]);
+        System.out.println();
+    }
+
+    // Check winner
+    static boolean checkWinner(char player) 
+{
+        Int [] [] wins = {  {0,1,2}, {3,4,5}, {6,7,8},
+                                     {0,3,6},{1,4,7},{2,5,8},
+                                      {0,4,8},{2,4,6} };
+        for (int[] win : wins)  
+{
+            if (board[win[0]] == player &&
+                board[win[1]] == player &&
+                board[win[2]] == player) 
+{
+                return true;
+            }
+        }
+        return false;
+    }
+    static boolean isDraw()                                                                                               // Check draw
+ {
+        for (char c : board)
+ {
+            if (c == ' ') return false;
+        }
+        return true;
+    }
+    static int minimax(boolean isMax)                                                              // Minimax algorithm
+ {
+        if (checkWinner('O')) return 1;
+        if (checkWinner('X')) return -1;
+        if (isDraw()) return 0;
+
+        if (isMax) 
+{
+            int best = Integer.MIN_VALUE;
+            for (int i = 0; i < 9; i++)
+ {
+                if (board[i] == ' ')
+ {
+                    board[i] = 'O';
+                    best = Math.max(best, minimax(false));
+                    board[i] = ' ';
+                }
+            }
+            return best;
+        } else {
+            int best = Integer.MAX_VALUE;
+            for (int i = 0; i < 9; i++)
+ {
+                if (board[i] == ' ') 
+{
+                    board[i] = 'X';
+                    best = Math.min(best, minimax(true));
+                    board[i] = ' ';
+                }
+            }
+            return best;
+        }
+    }
+    static void aiMove()                                                                                                            // AI move
+ {
+        int bestScore = Integer.MIN_VALUE;
+        int move = 0;
+        for (int i = 0; i < 9; i++)
+ {
+            if (board[i] == ' ') 
+{
+                board[i] = 'O';
+                int score = minimax(false);
+                board[i] = ' ';
+                if (score > bestScore)  
+{
+                    bestScore = score;
+                    move = i;
+                }
+            }
+        }
+        board[move] = 'O';
+    }
+    static void humanMove()                                                                                         // Human move
+ {
+        int move;
+        while (true) 
+{
+            System.out.print("Enter your move (1-9): ");
+            move = sc.nextInt() - 1;
+            if (move >= 0 && move < 9 && board[move] == ' ')
+ {
+                board[move] = 'X';
+                break;
+            }
+ else
+ {
+                System.out.println("Invalid move. Try again.");
+            }
+        }
+    }
+    public static void main(String[] args)                                                                         // Main game
+ {
+        System.out.println("TIC-TAC-TOE: Human (X) vs AI (O)");
+        printBoard();
+        while (true)
+ {
+            humanMove();
+            printBoard();
+            if (checkWinner('X'))
+ {
+                System.out.println("Human wins!");
+                break;
+            }
+            if (isDraw()) 
+{
+                System.out.println("Match Draw!");
+                break;
+            }
+            aiMove();
+            System.out.println("AI played:");
+            printBoard();
+            if (checkWinner('O'))
+ {
+                System.out.println("AI wins!");
+                break;
+            }
+            if (isDraw()) {
+                System.out.println("Match Draw!");
+                break;
+            }
+        }
+    }
+}
